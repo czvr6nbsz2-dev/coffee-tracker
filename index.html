@@ -98,10 +98,16 @@
       transition: color 0.4s;
     }
 
-    body.disaster .count-number {
+    body.at-limit .count-number {
+      color: #d4845a;
+    }
+
+    body.over-limit .count-number {
       color: #c0392b;
     }
 
+    body.at-limit .counter,
+    body.over-limit .counter,
     body.disaster .counter {
       color: #8a6050;
     }
@@ -134,6 +140,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
+    body.over-limit .add-btn,
     body.disaster .add-btn {
       border-color: rgba(192, 57, 43, 0.4);
       box-shadow:
@@ -471,6 +478,9 @@
     if (!state.limit) state.limit = 5;
     if (typeof state.count !== 'number') state.count = 0;
 
+    // Reset voor testen
+    state.count = 0;
+
     saveState(state);
 
     // Elements
@@ -511,18 +521,25 @@
         warning.classList.remove('visible');
       }
 
-      // Disaster mode: 3+ over limit
+      // Color escalation
+      document.body.classList.remove('at-limit', 'over-limit', 'disaster');
+      crackOverlay.classList.remove('visible');
+      vignette.classList.remove('visible');
+      disasterMsg.classList.remove('visible');
+
       if (over >= 3) {
+        // Disaster mode: cracks, vignette, messages
         document.body.classList.add('disaster');
         crackOverlay.classList.add('visible');
         vignette.classList.add('visible');
         disasterMsg.classList.add('visible');
         disasterText.textContent = pickDisasterMessage();
-      } else {
-        document.body.classList.remove('disaster');
-        crackOverlay.classList.remove('visible');
-        vignette.classList.remove('visible');
-        disasterMsg.classList.remove('visible');
+      } else if (over >= 1) {
+        // 1-2 over limit: red number
+        document.body.classList.add('over-limit');
+      } else if (over === 0) {
+        // Exactly at limit: orange number
+        document.body.classList.add('at-limit');
       }
 
       limitValue.textContent = state.limit;
