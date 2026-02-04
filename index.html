@@ -16,8 +16,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1a2e;
-      color: #e0e0e0;
+      background: #1b1008;
+      color: #e8ddd0;
       height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -25,6 +25,49 @@
       justify-content: center;
       user-select: none;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Warm radial coffee glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(111, 78, 55, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 30% 70%, rgba(90, 62, 40, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 75% 80%, rgba(139, 90, 43, 0.12) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Decorative coffee beans */
+    .bean {
+      position: fixed;
+      width: 22px;
+      height: 30px;
+      opacity: 0.08;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bean svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .bean-1 { bottom: 3rem; left: 1.5rem; transform: rotate(-25deg); }
+    .bean-2 { bottom: 5rem; left: 3.5rem; transform: rotate(15deg); width: 18px; height: 24px; opacity: 0.06; }
+    .bean-3 { top: 4rem; right: 2rem; transform: rotate(40deg); width: 16px; height: 22px; opacity: 0.06; }
+    .bean-4 { bottom: 2.5rem; right: 2.5rem; transform: rotate(-50deg); opacity: 0.07; }
+    .bean-5 { top: 6rem; left: 2rem; transform: rotate(70deg); width: 14px; height: 19px; opacity: 0.05; }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .counter {
@@ -33,6 +76,7 @@
       text-align: center;
       min-height: 1.8rem;
       transition: opacity 0.2s;
+      color: #c4a882;
     }
 
     .count-number {
@@ -40,16 +84,16 @@
       font-weight: 700;
       display: block;
       margin-bottom: 0.3rem;
-      color: #f5f5f5;
+      color: #f0e6d8;
     }
 
     .add-btn {
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      border: none;
-      background: #6f4e37;
-      color: #fff;
+      border: 2px solid rgba(193, 154, 107, 0.3);
+      background: linear-gradient(145deg, #6f4e37, #503a28);
+      color: #f0e6d8;
       font-size: 1.4rem;
       cursor: pointer;
       display: flex;
@@ -57,13 +101,18 @@
       align-items: center;
       justify-content: center;
       gap: 0.3rem;
-      transition: transform 0.1s, background 0.2s;
-      box-shadow: 0 4px 20px rgba(111, 78, 55, 0.4);
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow:
+        0 4px 24px rgba(111, 78, 55, 0.5),
+        0 0 60px rgba(111, 78, 55, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .add-btn:active {
       transform: scale(0.93);
-      background: #5a3e2b;
+      box-shadow:
+        0 2px 12px rgba(111, 78, 55, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .add-btn .icon {
@@ -75,9 +124,9 @@
       margin-top: 2rem;
       padding: 0.7rem 1.2rem;
       border-radius: 8px;
-      background: rgba(231, 76, 60, 0.15);
-      border: 1px solid rgba(231, 76, 60, 0.4);
-      color: #e74c3c;
+      background: rgba(180, 90, 50, 0.15);
+      border: 1px solid rgba(180, 90, 50, 0.35);
+      color: #d4845a;
       font-size: 0.95rem;
       text-align: center;
       min-height: 3rem;
@@ -97,10 +146,11 @@
       right: 1rem;
       background: none;
       border: none;
-      color: #666;
+      color: #6b5741;
       font-size: 1.4rem;
       cursor: pointer;
       padding: 0.5rem;
+      z-index: 2;
     }
 
     .settings-panel {
@@ -109,7 +159,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(15, 10, 5, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -125,7 +175,8 @@
     }
 
     .settings-card {
-      background: #2a2a40;
+      background: #2a1f14;
+      border: 1px solid rgba(193, 154, 107, 0.15);
       border-radius: 12px;
       padding: 1.5rem;
       width: 280px;
@@ -136,6 +187,7 @@
       font-size: 1.1rem;
       margin-bottom: 1rem;
       font-weight: 500;
+      color: #c4a882;
     }
 
     .limit-control {
@@ -150,9 +202,9 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      border: 1px solid #555;
-      background: #333;
-      color: #fff;
+      border: 1px solid #5a4530;
+      background: #3a2a1a;
+      color: #c4a882;
       font-size: 1.3rem;
       cursor: pointer;
     }
@@ -161,12 +213,13 @@
       font-size: 2rem;
       font-weight: 600;
       min-width: 2.5rem;
+      color: #f0e6d8;
     }
 
     .close-btn {
       background: #6f4e37;
       border: none;
-      color: #fff;
+      color: #f0e6d8;
       padding: 0.6rem 1.5rem;
       border-radius: 8px;
       font-size: 1rem;
@@ -177,8 +230,8 @@
       position: fixed;
       bottom: 2rem;
       background: none;
-      border: 1px solid #444;
-      color: #888;
+      border: 1px solid #3a2a1a;
+      color: #7a6550;
       padding: 0.5rem 1rem;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -186,6 +239,7 @@
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
+      z-index: 2;
     }
 
     .undo-btn.visible {
@@ -195,19 +249,28 @@
   </style>
 </head>
 <body>
+  <!-- Decorative coffee beans -->
+  <div class="bean bean-1"><svg viewBox="0 0 22 30"><ellipse cx="11" cy="15" rx="10" ry="14" fill="#c19a6b"/><path d="M11 3 C8 10 8 20 11 27" stroke="#1b1008" stroke-width="1.5" fill="none"/></svg></div>
+  <div class="bean bean-2"><svg viewBox="0 0 22 30"><ellipse cx="11" cy="15" rx="10" ry="14" fill="#c19a6b"/><path d="M11 3 C8 10 8 20 11 27" stroke="#1b1008" stroke-width="1.5" fill="none"/></svg></div>
+  <div class="bean bean-3"><svg viewBox="0 0 22 30"><ellipse cx="11" cy="15" rx="10" ry="14" fill="#c19a6b"/><path d="M11 3 C8 10 8 20 11 27" stroke="#1b1008" stroke-width="1.5" fill="none"/></svg></div>
+  <div class="bean bean-4"><svg viewBox="0 0 22 30"><ellipse cx="11" cy="15" rx="10" ry="14" fill="#c19a6b"/><path d="M11 3 C8 10 8 20 11 27" stroke="#1b1008" stroke-width="1.5" fill="none"/></svg></div>
+  <div class="bean bean-5"><svg viewBox="0 0 22 30"><ellipse cx="11" cy="15" rx="10" ry="14" fill="#c19a6b"/><path d="M11 3 C8 10 8 20 11 27" stroke="#1b1008" stroke-width="1.5" fill="none"/></svg></div>
+
   <button class="settings-btn" id="settingsBtn" aria-label="Instellingen">&#9881;</button>
 
-  <div class="counter">
-    <span class="count-number" id="countNumber">0</span>
-    <span id="counterText">Vandaag: 0 koffies</span>
+  <div class="content">
+    <div class="counter">
+      <span class="count-number" id="countNumber">0</span>
+      <span id="counterText">Vandaag: 0 koffies</span>
+    </div>
+
+    <button class="add-btn" id="addBtn">
+      <span class="icon">&#9749;</span>
+      <span>+1 koffie</span>
+    </button>
+
+    <div class="warning" id="warning">Dit is je max voor vandaag.</div>
   </div>
-
-  <button class="add-btn" id="addBtn">
-    <span class="icon">&#9749;</span>
-    <span>+1 koffie</span>
-  </button>
-
-  <div class="warning" id="warning">Dit is je max voor vandaag.</div>
 
   <button class="undo-btn" id="undoBtn">Ongedaan maken</button>
 
