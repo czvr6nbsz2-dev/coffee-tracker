@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Coffee Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .counter {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      min-height: 1.8rem;
+      transition: opacity 0.2s;
+    }
+
+    .count-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #f5f5f5;
+    }
+
+    .add-btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: none;
+      background: #6f4e37;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      transition: transform 0.1s, background 0.2s;
+      box-shadow: 0 4px 20px rgba(111, 78, 55, 0.4);
+    }
+
+    .add-btn:active {
+      transform: scale(0.93);
+      background: #5a3e2b;
+    }
+
+    .add-btn .icon {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .warning {
+      margin-top: 2rem;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.4);
+      color: #e74c3c;
+      font-size: 0.95rem;
+      text-align: center;
+      min-height: 3rem;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .warning.visible {
+      opacity: 1;
+    }
+
+    .settings-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 10;
+    }
+
+    .settings-panel.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .settings-card {
+      background: #2a2a40;
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 280px;
+      text-align: center;
+    }
+
+    .settings-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .limit-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .limit-control button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid #555;
+      background: #333;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .limit-control span {
+      font-size: 2rem;
+      font-weight: 600;
+      min-width: 2.5rem;
+    }
+
+    .close-btn {
+      background: #6f4e37;
+      border: none;
+      color: #fff;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .undo-btn {
+      position: fixed;
+      bottom: 2rem;
+      background: none;
+      border: 1px solid #444;
+      color: #888;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .undo-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <button class="settings-btn" id="settingsBtn" aria-label="Instellingen">&#9881;</button>
+
+  <div class="counter">
+    <span class="count-number" id="countNumber">0</span>
+    <span id="counterText">Vandaag: 0 koffies</span>
+  </div>
+
+  <button class="add-btn" id="addBtn">
+    <span class="icon">&#9749;</span>
+    <span>+1 koffie</span>
+  </button>
+
+  <div class="warning" id="warning">Dit is je max voor vandaag.</div>
+
+  <button class="undo-btn" id="undoBtn">Ongedaan maken</button>
+
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-card">
+      <h2>Daglimiet</h2>
+      <div class="limit-control">
+        <button id="limitDown">&minus;</button>
+        <span id="limitValue">5</span>
+        <button id="limitUp">+</button>
+      </div>
+      <button class="close-btn" id="closeSettings">Sluiten</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'coffee_tracker';
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function todayStr() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    // Init
+    const state = loadState();
+    const today = todayStr();
+
+    if (state.date !== today) {
+      state.date = today;
+      state.count = 0;
+    }
+
+    if (!state.limit) state.limit = 5;
+    if (typeof state.count !== 'number') state.count = 0;
+
+    saveState(state);
+
+    // Elements
+    const countNumber = document.getElementById('countNumber');
+    const counterText = document.getElementById('counterText');
+    const warning = document.getElementById('warning');
+    const addBtn = document.getElementById('addBtn');
+    const undoBtn = document.getElementById('undoBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const limitValue = document.getElementById('limitValue');
+    const limitDown = document.getElementById('limitDown');
+    const limitUp = document.getElementById('limitUp');
+    const closeSettings = document.getElementById('closeSettings');
+
+    let undoTimer = null;
+
+    function render() {
+      const n = state.count;
+      countNumber.textContent = n;
+      counterText.textContent = `Vandaag: ${n} ${n === 1 ? 'koffie' : 'koffies'}`;
+
+      if (n >= state.limit) {
+        warning.classList.add('visible');
+      } else {
+        warning.classList.remove('visible');
+      }
+
+      limitValue.textContent = state.limit;
+    }
+
+    function showUndo() {
+      clearTimeout(undoTimer);
+      undoBtn.classList.add('visible');
+      undoTimer = setTimeout(() => undoBtn.classList.remove('visible'), 4000);
+    }
+
+    addBtn.addEventListener('click', () => {
+      // Day check on every tap
+      const now = todayStr();
+      if (state.date !== now) {
+        state.date = now;
+        state.count = 0;
+      }
+
+      state.count++;
+      saveState(state);
+      render();
+      showUndo();
+    });
+
+    undoBtn.addEventListener('click', () => {
+      if (state.count > 0) {
+        state.count--;
+        saveState(state);
+        render();
+        undoBtn.classList.remove('visible');
+        clearTimeout(undoTimer);
+      }
+    });
+
+    // Settings
+    settingsBtn.addEventListener('click', () => settingsPanel.classList.add('open'));
+    closeSettings.addEventListener('click', () => settingsPanel.classList.remove('open'));
+    settingsPanel.addEventListener('click', (e) => {
+      if (e.target === settingsPanel) settingsPanel.classList.remove('open');
+    });
+
+    limitUp.addEventListener('click', () => {
+      state.limit++;
+      saveState(state);
+      render();
+    });
+
+    limitDown.addEventListener('click', () => {
+      if (state.limit > 1) {
+        state.limit--;
+        saveState(state);
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
